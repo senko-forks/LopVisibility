@@ -1,10 +1,11 @@
 {
   "Author": "SheepGoMeh",
-  "Name": "Visibility",
-  "InternalName": "Visibility",
-  "Description": "Allows you to hide players, pets, chocobos and minions.\nIncludes VoidList, which is a better blacklist.\nAccessible via /pvis\nMore information available via /xlhelp",
-  "Punchline": "Allows you to hide players, pets, chocobos and minions.",
-  "Tags": ["Blacklist", "Void", "VoidList", "Ban", "Hide", "Visibility", "QoL"],
-  "RepoUrl": "https://github.com/SheepGoMeh/VisibilityPlugin",
-  "ApplicableVersion": "any"
+  "Name": "LopVisibility",
+  "InternalName": "LopVisibility",
+  "Description": "Customized version of Visibility plugin.\n\nAllows you to hide players, pets, chocobos and minions.\nIncludes VoidList, which is a better blacklist.\nAccessible via /pvis\nMore information available via /xlhelp",
+  "Punchline": "Customized version of Visibility plugin.",
+  "Tags": ["Blacklist", "Void", "VoidList", "Ban", "Hide", "Visibility", "QoL", "Loporrit", "Mare"],
+  "RepoUrl": "https://github.com/senko-forks/LopVisibility",
+  "ApplicableVersion": "any",
+  "IconUrl": "https://raw.githubusercontent.com/senko-forks/LopVisibility/master/res/icon.png"
 }

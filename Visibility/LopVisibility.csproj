@@ -9,7 +9,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefaultItemExcludes>$(DefaultItemExcludes);**/Properties/Resources.*</DefaultItemExcludes>
 		<SignAssembly>false</SignAssembly>
-		<RepositoryUrl>https://github.com/SheepGoMeh/VisibilityPlugin</RepositoryUrl>
+		<RepositoryUrl>https://github.com/senko-forks/LopVisibility</RepositoryUrl>
 		<RepositoryType>GitHub</RepositoryType>
 	</PropertyGroup>
 	<ItemGroup>
