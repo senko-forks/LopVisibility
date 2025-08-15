@@ -7,7 +7,6 @@ using Dalamud.Plugin;
 
 using Visibility.Api;
 using Visibility.Configuration;
-using Visibility.Ipc;
 using Visibility.Utils;
 using Visibility.Handlers;
 using Visibility.Managers;
@@ -31,7 +30,6 @@ public class VisibilityPlugin: IDalamudPlugin
 	}
 
 	public VisibilityApi Api { get; }
-	public VisibilityProvider IpcProvider { get; }
 
 	public readonly CommandManagerHandler CommandManagerHandler;
 	private readonly ChatHandler chatHandler;
@@ -60,7 +58,6 @@ public class VisibilityPlugin: IDalamudPlugin
 		this.territoryChangeHandler = new TerritoryChangeHandler(this.FrameworkHandler, this.Configuration);
 
 		this.Api = new VisibilityApi();
-		this.IpcProvider = new VisibilityProvider(this.Api);
 	}
 
 	protected virtual void Dispose(bool disposing)
@@ -70,7 +67,6 @@ public class VisibilityPlugin: IDalamudPlugin
 			return;
 		}
 
-		this.IpcProvider.Dispose();
 		this.Api.Dispose();
 		this.territoryChangeHandler.Dispose();
 		this.chatHandler.Dispose();
