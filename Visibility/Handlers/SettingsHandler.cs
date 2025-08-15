@@ -99,6 +99,10 @@ public class SettingsHandler
 			}
 		);
 
+		this.settingActions[nameof(this.configurationInstance.ShowPairedPlayer)] =
+			this.CreateDirectToggleAction((v, t) => this.configurationInstance.ShowPairedPlayer.ToggleBool(v, t)
+			);
+
 		this.settingActions[nameof(this.configurationInstance.HideStar)] =
 			this.CreateDirectToggleAction((v, t) => this.configurationInstance.HideStar.ToggleBool(v, t)
 			);

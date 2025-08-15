@@ -210,6 +210,10 @@ public class Configuration: Window
 			ImGui.EndTable();
 		}
 
+		ImGuiElements.Checkbox(configuration.ShowPairedPlayer, nameof(configuration.ShowPairedPlayer));
+		ImGui.SameLine();
+		ImGui.Text("Show paired players (Loporrit/Mare)");
+
 		ImGuiElements.Checkbox(configuration.HideStar, nameof(configuration.HideStar));
 		ImGui.SameLine();
 		ImGui.Text(VisibilityPlugin.Instance.PluginLocalization.OptionEarthlyStar);
@@ -268,7 +272,7 @@ public class Configuration: Window
 		}
 
 		ImGui.NextColumn();
-		
+
 		ImGuiElements.Checkbox(configuration.ShowTargetOfTarget, nameof(configuration.ShowTargetOfTarget));
 		ImGui.SameLine();
 		ImGui.Text(VisibilityPlugin.Instance.PluginLocalization.OptionShowTargetOfTarget);

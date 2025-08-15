@@ -12,6 +12,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
+using Visibility.Configuration;
+
 using Visibility.Utils.EntityHandlers;
 
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
@@ -43,6 +45,7 @@ public class FrameworkHandler: IDisposable
 	private readonly ContainerManager containerManager;
 	private readonly VoidListManager voidListManager;
 	private readonly ObjectVisibilityManager visibilityManager;
+	private readonly PairedPlayerManager pairedPlayerManager;
 
 	// Entity handlers
 	private readonly PlayerHandler playerHandler;
@@ -51,6 +54,9 @@ public class FrameworkHandler: IDisposable
 	private readonly MinionHandler minionHandler;
 
 	private bool isChangingTerritory;
+
+	private static VisibilityConfiguration Configuration => VisibilityPlugin.Instance.Configuration;
+	private static TerritoryConfig CurrentConfig => VisibilityPlugin.Instance.Configuration.CurrentConfig;
 
 	/// <summary>
 	/// Constructor for FrameworkHandler
@@ -61,9 +67,10 @@ public class FrameworkHandler: IDisposable
 		this.containerManager = new ContainerManager();
 		this.voidListManager = new VoidListManager();
 		this.visibilityManager = new ObjectVisibilityManager();
+		this.pairedPlayerManager = new PairedPlayerManager();
 
 		// Initialize entity handlers
-		this.playerHandler = new PlayerHandler(this.containerManager, this.voidListManager, this.visibilityManager);
+		this.playerHandler = new PlayerHandler(this.containerManager, this.voidListManager, this.visibilityManager, this.pairedPlayerManager);
 		this.petHandler = new PetHandler(this.containerManager, this.voidListManager, this.visibilityManager);
 		this.chocoboHandler = new ChocoboHandler(this.containerManager, this.voidListManager, this.visibilityManager);
 		this.minionHandler = new MinionHandler(this.containerManager, this.visibilityManager);
@@ -80,17 +87,17 @@ public class FrameworkHandler: IDisposable
 
 		// Early exit conditions
 		if (namePlateWidget == nint.Zero ||
-		    (!((AtkUnitBase*)namePlateWidget)->IsVisible && !Service.Condition[ConditionFlag.Performing]) ||
-		    localPlayerGameObject == null || localPlayerGameObject->EntityId == 0xE0000000 ||
-		    VisibilityPlugin.Instance.Disable || this.isChangingTerritory)
+			(!((AtkUnitBase*)namePlateWidget)->IsVisible && !Service.Condition[ConditionFlag.Performing]) ||
+			localPlayerGameObject == null || localPlayerGameObject->EntityId == 0xE0000000 ||
+			VisibilityPlugin.Instance.Disable || this.isChangingTerritory)
 			return;
 
 		// Check if player is in a duty or other special area
 		bool isBound = (Service.Condition[ConditionFlag.BoundByDuty] &&
-		                localPlayerGameObject->EventId.ContentId != EventHandlerContent.TreasureHuntDirector)
-		               || Service.Condition[ConditionFlag.BetweenAreas]
-		               || Service.Condition[ConditionFlag.WatchingCutscene]
-		               || Service.Condition[ConditionFlag.DutyRecorderPlayback];
+						localPlayerGameObject->EventId.ContentId != EventHandlerContent.TreasureHuntDirector)
+					   || Service.Condition[ConditionFlag.BetweenAreas]
+					   || Service.Condition[ConditionFlag.WatchingCutscene]
+					   || Service.Condition[ConditionFlag.DutyRecorderPlayback];
 
 		Character* localPlayer = (Character*)localPlayerGameObject;
 
@@ -100,7 +107,8 @@ public class FrameworkHandler: IDisposable
 			GameObject* gameObject = GameObjectManager.Instance()->Objects.IndexSorted[i];
 			Character* characterPtr = (Character*)gameObject;
 
-			if (gameObject == null || gameObject == localPlayerGameObject || !gameObject->IsCharacter()) continue;
+			if (gameObject == null || gameObject == localPlayerGameObject || !gameObject->IsCharacter())
+				continue;
 
 			// Process different types of entities
 			switch ((ObjectKind)characterPtr->GameObject.ObjectKind)
@@ -109,7 +117,7 @@ public class FrameworkHandler: IDisposable
 					this.playerHandler.ProcessPlayer(characterPtr, localPlayer, isBound);
 					break;
 				case ObjectKind.BattleNpc when characterPtr->GameObject.SubKind == (byte)BattleNpcSubKind.Pet &&
-				                               characterPtr->NameId != 6565:
+											   characterPtr->NameId != 6565:
 					this.petHandler.ProcessPet(characterPtr, localPlayer, isBound);
 					break;
 				case ObjectKind.BattleNpc
@@ -128,6 +136,11 @@ public class FrameworkHandler: IDisposable
 
 		// Clean up expired entries in containers
 		this.containerManager.CleanupContainers();
+
+		if (Configuration.ShowPairedPlayer)
+			this.pairedPlayerManager.Update();
+		else
+			this.pairedPlayerManager.Clear();
 	}
 
 	/// <summary>

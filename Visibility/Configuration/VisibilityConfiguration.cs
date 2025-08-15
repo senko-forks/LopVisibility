@@ -20,6 +20,7 @@ public partial class VisibilityConfiguration: IPluginConfiguration
 	public Localization.Language Language { get; set; }
 
 	public bool Enabled;
+	public bool ShowPairedPlayer;
 	public bool HideStar;
 	public bool AdvancedEnabled;
 	public bool EnableContextMenu;

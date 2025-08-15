@@ -16,6 +16,7 @@ public class PlayerHandler
 	private readonly ContainerManager containerManager;
 	private readonly VoidListManager voidListManager;
 	private readonly ObjectVisibilityManager visibilityManager;
+	private readonly PairedPlayerManager pairedPlayerManager;
 
 	private static VisibilityConfiguration Configuration => VisibilityPlugin.Instance.Configuration;
 	private static TerritoryConfig CurrentConfig => VisibilityPlugin.Instance.Configuration.CurrentConfig;
@@ -23,11 +24,13 @@ public class PlayerHandler
 	public PlayerHandler(
 		ContainerManager containerManager,
 		VoidListManager voidListManager,
-		ObjectVisibilityManager visibilityManager)
+		ObjectVisibilityManager visibilityManager,
+		PairedPlayerManager pairedPlayerManager)
 	{
 		this.containerManager = containerManager;
 		this.voidListManager = voidListManager;
 		this.visibilityManager = visibilityManager;
+		this.pairedPlayerManager = pairedPlayerManager;
 	}
 
 	/// <summary>
@@ -124,9 +127,14 @@ public class PlayerHandler
 		    !CurrentConfig.HidePlayer)
 			return true;
 
+		// Check if player is handled by Loporrit/Mare
+		if (Configuration.ShowPairedPlayer &&
+			this.pairedPlayerManager.IsHandledAddress((nint)characterPtr))
+			return true;
+
 		// Check if player is dead and show dead players is enabled
 		if (CurrentConfig.ShowDeadPlayer &&
-		    characterPtr->GameObject.IsDead())
+			characterPtr->GameObject.IsDead())
 			return true;
 
 		// Check if player is a friend and show friends is enabled
